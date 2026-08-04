@@ -1,0 +1,138 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fc;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Skip Link */
+.skip-link {
+    position: absolute;
+    left: -999px;
+    top: auto;
+}
+
+.skip-link:focus {
+    left: 20px;
+    top: 10px;
+    background: #000;
+    color: white;
+    padding: 10px;
+    z-index: 1000;
+}
+
+/* Header */
+header {
+    background: #0d47a1;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+/* Navigation */
+nav {
+    background: #1565c0;
+    text-align: center;
+    padding: 12px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: yellow;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background: #e3f2fd;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+/* Main */
+main {
+    padding: 30px;
+}
+
+/* Section */
+section {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+/* Article */
+article {
+    background: #f9f9f9;
+    padding: 15px;
+    margin-top: 15px;
+    border-left: 5px solid #1565c0;
+}
+
+/* Aside */
+aside {
+    background: #fff3cd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input,
+textarea,
+select {
+    padding: 10px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px;
+    background: #1565c0;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0d47a1;
+}
+
+/* Footer */
+footer {
+    background: #0d47a1;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
