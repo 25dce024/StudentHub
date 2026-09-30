@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "Princy",
+    "gender": "Female",
+    "mobile": "9876543210",
+    "college": "ABC College of Engineering",
+    "branch": "CE",
+    "address": "Anand, Gujarat, India",
+    "hobbies": [
+      "Reading",
+      "Music"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Dhruvi",
+    "gender": "Female",
+    "mobile": "9876543211",
+    "college": "XYZ College of Engineering",
+    "branch": "CE",
+    "address": "Surat, Gujarat, India",
+    "hobbies": [
+      "Music",
+      "Traveling"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Mahek",
+    "gender": "Female",
+    "mobile": "9876543212",
+    "college": "ABC Institute of Technology",
+    "branch": "IT",
+    "address": "Valsad, Gujarat, India",
+    "hobbies": [
+      "Reading",
+      "Gaming"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Kavya",
+    "gender": "Female",
+    "mobile": "9876543213",
+    "college": "XYZ Institute of Technology",
+    "branch": "IT",
+    "address": "Anand, Gujarat, India",
+    "hobbies": [
+      "Sports",
+      "Traveling"
+    ]
+  }
+]
