@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudentHub - Practical 13: PHP JSON API and AJAX/Fetch-Based CRUD without Page Reload">
+    <title>StudentHub - Practical 13: Fetch API Async CRUD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">&#127891;</span>
+                <span>Student Hub &bull; Async API</span>
+            </a>
+            <span class="badge">Practical 13 &bull; Fetch API &amp; JSON CRUD</span>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        <div class="page-header">
+            <span class="subheading">CHARUSAT &bull; FTE &bull; Practical 13</span>
+            <h1>Asynchronous Student CRUD Engine</h1>
+            <p>Perform Create, Read, Update, and Delete operations seamlessly via PHP JSON REST API &amp; JavaScript Fetch API with zero page reloads.</p>
+        </div>
+
+        <!-- Metric Counters -->
+        <div class="stats-bar">
+            <div class="stat-box">
+                <div class="stat-icon">&#127891;</div>
+                <div>
+                    <div class="stat-num" id="totalCount">0</div>
+                    <div class="stat-desc">Total Active Students</div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon" style="background: var(--success-light); color: var(--success);">&#10004;</div>
+                <div>
+                    <div class="stat-num" id="activeCount">0</div>
+                    <div class="stat-desc">Enrolled / Active</div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">&#11088;</div>
+                <div>
+                    <div class="stat-num" id="avgCgpa">0.00</div>
+                    <div class="stat-desc">Average Batch CGPA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Actions Toolbar -->
+        <div class="action-toolbar">
+            <div class="filter-group">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Live search by name, email, or enrollment..."
+                    aria-label="Search students"
+                >
+
+                <select id="departmentFilter" class="filter-select" aria-label="Filter by department">
+                    <option value="ALL">All Departments</option>
+                    <option value="CE">Computer Eng (CE)</option>
+                    <option value="IT">Info Tech (IT)</option>
+                    <option value="AI & DS">AI &amp; Data Science</option>
+                    <option value="EC">Electronics &amp; Comm (EC)</option>
+                    <option value="ME">Mechanical (ME)</option>
+                    <option value="CL">Civil Eng (CL)</option>
+                </select>
+
+                <select id="statusFilter" class="filter-select" aria-label="Filter by status">
+                    <option value="ALL">All Statuses</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                </select>
+
+                <button id="refreshBtn" class="btn btn-outline btn-sm" title="Reload records">&#8635; Reload</button>
+            </div>
+
+            <button id="openAddModalBtn" class="btn btn-success btn-sm">
+                &#43; Add Student (Async)
+            </button>
+        </div>
+
+        <!-- Table Card with Live Spinner -->
+        <div class="table-card">
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="spinner"></div>
+                <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary);">
+                    Communicating with PHP JSON API...
+                </span>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Enrollment No</th>
+                            <th>Student Name</th>
+                            <th>Email Address</th>
+                            <th>Department</th>
+                            <th>Contact</th>
+                            <th>CGPA</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Async Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Dynamically populated via JavaScript Fetch API -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form (Create & Update) -->
+    <div id="studentModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Student</h3>
+                <button type="button" id="modalCloseBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            </div>
+
+            <form id="studentForm">
+                <div class="modal-body">
+                    <div id="formErrorAlert" class="alert alert-error" style="display: none; margin-bottom: 16px;"></div>
+                    <input type="hidden" id="studentDbId">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="studentIdInput">Enrollment Number *</label>
+                            <input type="text" id="studentIdInput" class="form-input" placeholder="e.g. 25DCE050" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="nameInput">Full Name *</label>
+                            <input type="text" id="nameInput" class="form-input" placeholder="e.g. Avi Beladiya" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="emailInput">Email Address *</label>
+                            <input type="email" id="emailInput" class="form-input" placeholder="e.g. avi@charusat.edu.in" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="mobileInput">Mobile Number *</label>
+                            <input type="tel" id="mobileInput" class="form-input" placeholder="e.g. 9876543210" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="branchInput">Department *</label>
+                            <select id="branchInput" class="form-select" required>
+                                <option value="CE">Computer Engineering (CE)</option>
+                                <option value="IT">Information Technology (IT)</option>
+                                <option value="AI & DS">Artificial Intelligence &amp; Data Science</option>
+                                <option value="EC">Electronics &amp; Communication (EC)</option>
+                                <option value="ME">Mechanical Engineering (ME)</option>
+                                <option value="CL">Civil Engineering (CL)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="semesterInput">Semester *</label>
+                            <select id="semesterInput" class="form-select" required>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3" selected>Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="academicYearInput">Academic Year *</label>
+                            <select id="academicYearInput" class="form-select" required>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year" selected>2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="cgpaInput">Current CGPA (0.0 - 10.0)</label>
+                            <input type="number" id="cgpaInput" class="form-input" min="0" max="10" step="0.01" value="8.50" required>
+                        </div>
+
+                        <div class="form-group col-full">
+                            <label class="form-label" for="statusInput">Status *</label>
+                            <select id="statusInput" class="form-select" required>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-full">
+                            <label class="form-label" for="addressInput">Residential Address</label>
+                            <textarea id="addressInput" class="form-textarea" rows="2" placeholder="e.g. Anand / Changa, Gujarat"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="cancelModalBtn" class="btn btn-outline">Cancel</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">&#10004; Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Toast Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 StudentHub &bull; Charotar University of Science and Technology (CHARUSAT)</p>
+            <p>Faculty of Technology and Engineering (FTE) &bull; Subject: ITUE203 Web Development Frameworks</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
